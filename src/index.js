@@ -1,9 +1,10 @@
-
+import './css/styles.css';
+import './css/common.css';
 import { GalleryAPI } from './fetchGallery';
 import { LoadMoreBtn } from './loadMoreBtn';
 import { Notify } from 'notiflix';
-// import SimpleLightbox from 'simplelightbox';
-// import 'simplelightbox/dist/simple-lightbox.min.css';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 
 
@@ -41,7 +42,7 @@ async function onFormSubmit(evt) {
     }
    
 }
-// const galleryItemsMarkup = onMarkupPhotos();
+
 function onMarkupPhotos(hits) {
   const markupPhotos = hits
     .map(
@@ -76,8 +77,10 @@ function onMarkupPhotos(hits) {
       }
     )
     .join('');
+
+    refs.imageContainer.insertAdjacentHTML('beforeend', markupPhotos);
 }
-refs.imageContainer.insertAdjacentHTML('beforeend', hits);
+
 
 async function onLoadMoreBtn() {
     loadMoreBtn.loading();
@@ -89,4 +92,9 @@ async function onLoadMoreBtn() {
        Notify.failure('Error'); 
     }
 }
+
+const lightbox = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionDelay: 250,
+  });
 
