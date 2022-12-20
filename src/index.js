@@ -41,9 +41,9 @@ async function onFormSubmit(evt) {
     }
    
 }
-
-function onMarkupPhotos(photos) {
-  const markupPhotos = photos
+// const galleryItemsMarkup = onMarkupPhotos();
+function onMarkupPhotos(hits) {
+  const markupPhotos = hits
     .map(
       ({
         webformatURL,
@@ -77,7 +77,7 @@ function onMarkupPhotos(photos) {
     )
     .join('');
 }
-refs.imageContainer.insertAdjacentHTML('beforeend', markupPhotos);
+refs.imageContainer.insertAdjacentHTML('beforeend', hits);
 
 async function onLoadMoreBtn() {
     loadMoreBtn.loading();
