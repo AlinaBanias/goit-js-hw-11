@@ -20,6 +20,10 @@ const refs = {
 refs.searchForm.addEventListener('submit', onFormSubmit);
 const galleryAPI = new GalleryAPI();
 const loadMoreBtn = new LoadMoreBtn('load-more', onLoadMoreBtn);
+const simplelightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
 async function onFormSubmit(evt) {
     evt.preventDefault();
@@ -29,16 +33,25 @@ async function onFormSubmit(evt) {
         Notify.warning('Enter something');
         return;
     }
+
       
     galleryAPI.resetPage();
    
 
     try {
-        const { hits, totalHits } = await galleryAPI.axiosAPI(); 
+        const { hits, totalHits } = await galleryAPI.axiosAPI();
+        if(totalHits === 0) {
+          Notify.warning("Sorry, there are no images matching your search query. Please try again.")
+          refs.imageContainer.innerHTML = ''; 
+         loadMoreBtn.hide();
+        return;
+        };
+        Notify.success(`Hooray! We found ${totalHits} images.`);
         onMarkupPhotos(hits);
+        simplelightbox.refresh();
         loadMoreBtn.show();
     } catch (error) {
-       Notify.failure('Error'); 
+      Notify.failure('Error');
     }
    
 }
@@ -55,10 +68,11 @@ function onMarkupPhotos(hits) {
         comments,
         downloads,
       }) => {
-        return `<div class="photo-card">
-              <a href="${largeImageURL}">
+        return ` 
+        <div class="photo-card">
+        <a href="${largeImageURL}" class="gallery-link">
                 <img src="${webformatURL}" alt="${tags}" loading="lazy" />
-              </a>
+                </a>
               <div class="info">
                 <p class="info-item">
                   <b>Likes: </b>${likes}
@@ -73,7 +87,8 @@ function onMarkupPhotos(hits) {
                   <b>Downloads: </b>${downloads}
                 </p>
               </div>
-      </div>`;
+      </div>
+      `;
       }
     )
     .join('');
@@ -87,14 +102,19 @@ async function onLoadMoreBtn() {
     try {
         const { hits, totalHits } = await galleryAPI.axiosAPI(); 
         onMarkupPhotos(hits);
+
         loadMoreBtn.endLoading();
+        if(hits.length < 40){
+          loadMoreBtn.hide();
+          simplelightbox.refresh();
+          Notify.warning("We're sorry, but you've reached the end of search results.");
+          return;
+        }
     } catch (error) {
        Notify.failure('Error'); 
     }
 }
 
-const lightbox = new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
-    captionDelay: 250,
-  });
+
+
 

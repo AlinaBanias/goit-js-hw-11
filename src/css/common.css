@@ -16,8 +16,8 @@
     display: block;
     max-width: 100%;
     list-style: none;
-    height: auto;
-    object-fit: cover;
+    height: 240px;
+    
   }
   
   ul {
