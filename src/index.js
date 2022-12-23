@@ -27,7 +27,7 @@ const simplelightbox = new SimpleLightbox('.gallery a', {
 
 async function onFormSubmit(evt) {
     evt.preventDefault();
-
+    refs.imageContainer.innerHTML = '';
     galleryAPI.query = evt.currentTarget.elements.searchQuery.value.trim();
     if (galleryAPI.query === '') {
         Notify.warning('Enter something');
